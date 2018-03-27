@@ -1,20 +1,38 @@
 require './constants'
+require './string_extensions'
 require './car'
 
 class CarFactory
   include CarConstants
+  include StringExtensions
 
-  def initialize(factory_name, car_brand)
+  UnsupportedBrandException = Class.new(StandardError)
+
+  def initialize(factory_name, car_brands)
     @factory_name = factory_name
-    @car_brand = car_brand[:brands]
+    @car_brands = if car_brands[:brands].is_a?(Array)
+                    car_brands[:brands]
+                  else
+                    [car_brands[:brands]]
+                  end
 
-    if @car_brand == nil
+    unless @car_brands.all? { |brand| AVAILABLE_BRANDS.include?(brand) }
       raise UnsupportedBrandException,
-            "Brand not supported: #{car_brand[:brands].to_s.capitalize}"
+            "Brand not supported: '#{to_human(car_brands[:brands])}'"
     end
   end
 
-  def make_car
-    Car.new()
+  def make_car(special_brand = nil)
+    if special_brand.nil? && @car_brands.count > 1
+      raise UnsupportedBrandException,
+            'Factory does not have a brand or do not support it'
+    elsif special_brand.nil?
+      Car.new(@car_brands[0])
+    elsif AVAILABLE_BRANDS.include?(special_brand)
+      Car.new(special_brand)
+    else
+      raise CarFactory::UnsupportedBrandException,
+            'Factory does not have a brand or do not support it'
+    end
   end
 end

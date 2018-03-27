@@ -1,3 +1,5 @@
+require './car_park.rb'
+
 RSpec.describe CarPark do
   describe '#capacity' do
     it 'returns car park capacity' do

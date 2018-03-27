@@ -1,6 +1,5 @@
 module CarConstants
   AVAILABLE_BRANDS = %i[
-    subaru
     fiat
     lancia
     ford

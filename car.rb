@@ -1,7 +1,9 @@
 require './constants'
+require './string_extensions'
 
 class Car
   include CarConstants
+  include StringExtensions
 
   @@last_color = 0
 
@@ -22,15 +24,5 @@ class Car
 
   def color_name
     to_human(@color_name)
-  end
-
-  private
-
-  def to_human(sym)
-    text = ''
-    sym.to_s.split('_').each do |word|
-      text = text + word.capitalize + ' '
-    end
-    text.strip
   end
 end

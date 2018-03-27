@@ -1,3 +1,5 @@
+require './car_factory.rb'
+
 RSpec.describe CarFactory do
   describe '.new' do
     it 'Creates new factory with given name and brand' do
