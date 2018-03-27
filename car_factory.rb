@@ -8,8 +8,8 @@ class CarFactory
 
   UnsupportedBrandException = Class.new(StandardError)
 
-  def initialize(factory_name, car_brands)
-    @factory_name = factory_name
+  def initialize(name, car_brands)
+    @name = name
     @car_brands = if car_brands[:brands].is_a?(Array)
                     car_brands[:brands]
                   else
@@ -34,5 +34,9 @@ class CarFactory
       raise CarFactory::UnsupportedBrandException,
             'Factory does not have a brand or do not support it'
     end
+  end
+
+  def name
+    "#{@name} (produces #{to_human(@car_brands.join(', '))})"
   end
 end
