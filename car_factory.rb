@@ -32,9 +32,11 @@ class CarFactory
     end
   end
 
-  def make_cars(number_of_cars)
-    (1..number_of_cars).map do |i|
-      make_car(@car_brands[(i - 1) % @car_brands.count])
+  def make_cars(args)
+    if args.is_a? Numeric
+      make_default_cars(args)
+    elsif args.is_a? Hash
+      make_special_cars(args)
     end
   end
 
@@ -43,6 +45,20 @@ class CarFactory
   end
 
   private
+
+  def make_default_cars(number_of_cars)
+    (1..number_of_cars).map { |i| make_car(@car_brands[(i - 1) % @car_brands.count]) }
+  end
+
+  def make_special_cars(cars_list)
+    cars = []
+    cars_list.each do |brand, quantity|
+      (1..quantity).each do
+        cars << make_car(brand) if SUPPORTED_BRANDS.include? brand
+      end
+    end
+    cars
+  end
 
   def make_default_car
     if @car_brands.count == 1
@@ -62,7 +78,3 @@ class CarFactory
     end
   end
 end
-
-factory = CarFactory.new('Fiat Bielsko', brands: [:lancia, :subaru])
-
-cars = factory.make_cars(3)
