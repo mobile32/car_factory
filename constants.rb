@@ -1,8 +1,9 @@
 module CarConstants
-  AVAILABLE_BRANDS = %i[
+  SUPPORTED_BRANDS = %i[
     fiat
     lancia
     ford
+    subaru
   ].freeze
 
   AVAILABLE_COLORS = %i[

@@ -1,9 +1,6 @@
 module StringExtensions
   def to_human(sym)
-    text = ''
-    sym.to_s.split('_').each do |word|
-      text = text + word.capitalize + ' '
-    end
-    text.strip
+    words = sym.to_s.split('_').each(&:capitalize!)
+    words.join(' ')
   end
 end
