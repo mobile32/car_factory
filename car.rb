@@ -1,8 +1,6 @@
-require './string_extensions'
+require './string_transform'
 
 class Car
-  include StringExtensions
-
   class << self
     attr_accessor :number_of_cars
   end
@@ -22,28 +20,26 @@ class Car
     navy_blue
   ].freeze
 
-  attr_reader :car_brand, :color_name
+  attr_reader :car_brand, :color_value
 
-  def initialize(car_brand, color_name = nil)
+  def initialize(car_brand, color: nil)
     @car_brand = car_brand if SUPPORTED_BRANDS.include? car_brand
 
-    if color_name.nil?
-      @color_name = AVAILABLE_COLORS[self.class.number_of_cars % AVAILABLE_COLORS.count]
-    elsif AVAILABLE_COLORS.include? color_name[:color]
-      @color_name = color_name[:color]
+    if color.nil?
+      @color_value = AVAILABLE_COLORS[self.class.number_of_cars % AVAILABLE_COLORS.count]
+    elsif AVAILABLE_COLORS.include? color
+      @color_value = color
     end
 
     self.class.number_of_cars += 1
   end
 
   def brand
-    to_human(car_brand)
+    StringTransform.to_human(car_brand)
   end
 
   def color_name
-    to_human(color_name)
+    StringTransform.to_human(color_value)
   end
 end
-
-
 

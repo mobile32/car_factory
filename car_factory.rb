@@ -1,10 +1,7 @@
-require './string_extensions'
 require './car'
+require './string_transform'
 
 class CarFactory
-  include CarConstants
-  include StringExtensions
-
   UnsupportedBrandException = Class.new(StandardError)
 
   attr_reader :number_of_cars
@@ -13,9 +10,13 @@ class CarFactory
     @name = name
     @car_brands = [brands].flatten
 
-    unless @car_brands.all? { |brand| SUPPORTED_BRANDS.include?(brand) }
-      raise UnsupportedBrandException,
-            "Brand not supported: '#{to_human(car_brands[:brands])}'"
+    not_supported_brands = @car_brands.find_all do |brand|
+      !Car::SUPPORTED_BRANDS.include?(brand)
+    end
+
+    unless not_supported_brands.empty?
+      message = StringTransform.to_human(not_supported_brands.map(&:capitalize).join(', '))
+      raise UnsupportedBrandException, "Brand not supported: '#{message}'"
     end
   end
 
@@ -49,9 +50,9 @@ class CarFactory
 
   def make_special_cars(cars_list)
     cars = []
-    cars_list.each do |brand, quantity|
-      (1..quantity).each do
-        cars << make_car(brand) if SUPPORTED_BRANDS.include? brand
+    cars_list.each_with_object([]) do |(brand, quantity), cars|
+      quantity.times do
+        cars << make_car(brand) if SUPPORTED_BRANDS.include?(brand)
       end
     end
     cars
