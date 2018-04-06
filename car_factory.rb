@@ -1,4 +1,3 @@
-require './constants'
 require './string_extensions'
 require './car'
 
@@ -10,13 +9,9 @@ class CarFactory
 
   attr_reader :number_of_cars
 
-  def initialize(name, car_brands)
+  def initialize(name, brands:)
     @name = name
-    @car_brands = if car_brands[:brands].is_a?(Array)
-                    car_brands[:brands]
-                  else
-                    [car_brands[:brands]]
-                  end
+    @car_brands = [brands].flatten
 
     unless @car_brands.all? { |brand| SUPPORTED_BRANDS.include?(brand) }
       raise UnsupportedBrandException,
@@ -46,8 +41,10 @@ class CarFactory
 
   private
 
+  attr_reader :car_brands
+
   def make_default_cars(number_of_cars)
-    (1..number_of_cars).map { |i| make_car(@car_brands[(i - 1) % @car_brands.count]) }
+    (1..number_of_cars).map { |i| make_car(car_brands[(i - 1) % car_brands.count]) }
   end
 
   def make_special_cars(cars_list)
@@ -61,8 +58,8 @@ class CarFactory
   end
 
   def make_default_car
-    if @car_brands.count == 1
-      Car.new(@car_brands.first)
+    if car_brands.count == 1
+      Car.new(car_brands.first)
     else
       raise UnsupportedBrandException,
             'Factory does not have a brand or do not support it'
@@ -70,7 +67,7 @@ class CarFactory
   end
 
   def make_special_car(special_brand)
-    if @car_brands.include?(special_brand)
+    if car_brands.include?(special_brand)
       Car.new(special_brand)
     else
       raise UnsupportedBrandException,
