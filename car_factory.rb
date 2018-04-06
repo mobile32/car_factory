@@ -49,13 +49,11 @@ class CarFactory
   end
 
   def make_special_cars(cars_list)
-    cars = []
     cars_list.each_with_object([]) do |(brand, quantity), cars|
       quantity.times do
-        cars << make_car(brand) if SUPPORTED_BRANDS.include?(brand)
+        cars << make_car(brand) if Car::SUPPORTED_BRANDS.include?(brand)
       end
     end
-    cars
   end
 
   def make_default_car
